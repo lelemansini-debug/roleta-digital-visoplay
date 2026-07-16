@@ -17,10 +17,17 @@ export function pickWeightedPrize(prizes) {
   return activePrizes.at(-1) ?? null
 }
 
-export function getPrizeRotation(prizes, prizeId) {
+export function getPrizeRotation(prizes, prizeId, currentRotation = 0) {
   const index = prizes.findIndex((prize) => prize.id === prizeId)
+  if (index < 0 || prizes.length === 0) return currentRotation
+
   const sliceAngle = 360 / prizes.length
   const prizeCenter = index * sliceAngle + sliceAngle / 2
-  const pointerAngle = 270
-  return 360 * 6 + pointerAngle - prizeCenter
+  const pointerAngle = 0
+  const baseTarget = pointerAngle - prizeCenter
+  const normalizedCurrent = ((currentRotation % 360) + 360) % 360
+  const normalizedTarget = ((baseTarget % 360) + 360) % 360
+  const delta = (normalizedTarget - normalizedCurrent + 360) % 360
+
+  return currentRotation + 360 * 7 + delta
 }
