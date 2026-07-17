@@ -1566,6 +1566,42 @@ input[type="range"] {
   gap: 16px;
 }
 
+.result-image-size-control {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 18px;
+  color: rgb(255 255 255 / 78%);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.result-image-size-presets {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 7px;
+}
+
+.result-image-size-presets button {
+  min-height: 42px;
+  border: 0;
+  border-right: 1px solid rgb(255 255 255 / 12%);
+  background: rgb(255 255 255 / 5%);
+  color: rgb(255 255 255 / 76%);
+  cursor: pointer;
+  font: inherit;
+}
+
+.result-image-size-presets button:last-child {
+  border-right: 0;
+}
+
+.result-image-size-presets button.is-active {
+  background: var(--primary);
+  color: #07111f;
+}
+
 .two-cols {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }

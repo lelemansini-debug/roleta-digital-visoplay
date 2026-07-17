@@ -2,6 +2,13 @@ import { useMemo, useState } from 'react'
 import { ArrowLeft, Download, Eye, RotateCcw, Trash2 } from 'lucide-react'
 import { clearHistory, clearLeads, exportHistoryCsv, exportLeadsCsv, loadHistory, loadLeads } from '../utils/history.js'
 
+const resultImagePresets = [
+  { label: 'Pequena', width: 34, height: 18 },
+  { label: 'Média', width: 50, height: 28 },
+  { label: 'Grande', width: 68, height: 38 },
+  { label: 'Máxima', width: 88, height: 50 },
+]
+
 export default function AdminScreen({ config, prizes, sliceCount, spinDurationMs, resultLayout, leadCapture, onChange, onResetPrizes, onTestResult, onClose }) {
   const [history, setHistory] = useState(() => loadHistory())
   const [leads, setLeads] = useState(() => loadLeads())
@@ -20,6 +27,21 @@ export default function AdminScreen({ config, prizes, sliceCount, spinDurationMs
 
   function updateResultLayout(patch) {
     onChange({ resultLayout: patch })
+  }
+
+  function updateResultImageWidth(width) {
+    updateResultLayout({
+      resultPrizeImageLeft: `${Math.max(0, (100 - width) / 2)}%`,
+      resultPrizeImageWidth: `${width}%`,
+    })
+  }
+
+  function applyResultImagePreset({ width, height }) {
+    updateResultLayout({
+      resultPrizeImageLeft: `${Math.max(0, (100 - width) / 2)}%`,
+      resultPrizeImageWidth: `${width}%`,
+      resultPrizeImageHeight: `${height}%`,
+    })
   }
 
   function updateLeadCapture(patch) {
@@ -64,11 +86,28 @@ export default function AdminScreen({ config, prizes, sliceCount, spinDurationMs
             </button>
           </div>
 
+          <div className="result-image-size-control">
+            <span>Tamanho rápido da imagem</span>
+            <div className="result-image-size-presets" role="group" aria-label="Tamanho da imagem do prêmio">
+              {resultImagePresets.map((preset) => (
+                <button
+                  className={Number.parseFloat(resultLayout.resultPrizeImageWidth) === preset.width ? 'is-active' : ''}
+                  type="button"
+                  aria-pressed={Number.parseFloat(resultLayout.resultPrizeImageWidth) === preset.width}
+                  onClick={() => applyResultImagePreset(preset)}
+                  key={preset.label}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="settings-grid two-cols">
-            <RangeField label="Posição vertical da imagem" value={resultLayout.resultPrizeImageTop} min={20} max={58} onChange={(value) => updateResultLayout({ resultPrizeImageTop: value + '%' })} />
-            <RangeField label="Posição horizontal da imagem" value={resultLayout.resultPrizeImageLeft} min={10} max={60} onChange={(value) => updateResultLayout({ resultPrizeImageLeft: value + '%' })} />
-            <RangeField label="Largura da imagem" value={resultLayout.resultPrizeImageWidth} min={18} max={60} onChange={(value) => updateResultLayout({ resultPrizeImageWidth: value + '%' })} />
-            <RangeField label="Altura da imagem" value={resultLayout.resultPrizeImageHeight} min={10} max={34} onChange={(value) => updateResultLayout({ resultPrizeImageHeight: value + '%' })} />
+            <RangeField label="Posição vertical da imagem" value={resultLayout.resultPrizeImageTop} min={10} max={58} onChange={(value) => updateResultLayout({ resultPrizeImageTop: value + '%' })} />
+            <RangeField label="Posição horizontal da imagem" value={resultLayout.resultPrizeImageLeft} min={0} max={90} onChange={(value) => updateResultLayout({ resultPrizeImageLeft: value + '%' })} />
+            <RangeField label="Largura da imagem" value={resultLayout.resultPrizeImageWidth} min={18} max={92} onChange={updateResultImageWidth} />
+            <RangeField label="Altura da imagem" value={resultLayout.resultPrizeImageHeight} min={10} max={52} onChange={(value) => updateResultLayout({ resultPrizeImageHeight: value + '%' })} />
             <RangeField label="Posição vertical do nome" value={resultLayout.resultPrizeNameTop} min={42} max={64} onChange={(value) => updateResultLayout({ resultPrizeNameTop: value + '%' })} />
             <RangeField label="Posição horizontal do nome" value={resultLayout.resultPrizeNameLeft} min={4} max={36} onChange={(value) => updateResultLayout({ resultPrizeNameLeft: value + '%' })} />
             <RangeField label="Largura do nome" value={resultLayout.resultPrizeNameWidth} min={40} max={92} onChange={(value) => updateResultLayout({ resultPrizeNameWidth: value + '%' })} />
