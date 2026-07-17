@@ -1,0 +1,10 @@
+{
+  "appId": "com.visoplay.roletadigital",
+  "appName": "Roleta Digital Viso Play",
+  "webDir": "dist",
+  "backgroundColor": "#07111f",
+  "zoomEnabled": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}
